@@ -24,7 +24,20 @@
 
     private static int CountDuplicates(int[] data)
     {
-        // Add code here.
-        return 0;
+        List<int> numbers = new List<int>();
+        int duplicates = 0;
+
+        foreach (int value in data)
+        {
+            if (numbers.Contains(value))
+            {
+                duplicates++;
+            }
+            else
+            {
+                numbers.Add(value);
+            }
+        }
+        return duplicates;
     }
 }
