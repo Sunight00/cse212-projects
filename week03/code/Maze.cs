@@ -32,6 +32,14 @@ public class Maze
     /// </summary>
     public void MoveLeft()
     {
+        if (_mazeMap[(_currX, _currY)][0])
+        {
+            _currX--;
+        }
+        else
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
         // FILL IN CODE
     }
 

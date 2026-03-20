@@ -1,5 +1,5 @@
 using System.Text.Json;
-
+using System;
 public static class SetsAndMaps
 {
     /// <summary>
@@ -21,8 +21,23 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var list = new HashSet<string>();
+        var pairs = new HashSet<string>();
+        foreach (string word in words)
+        {
+            char[] arr = word.ToCharArray();
+            Array.Reverse(arr);
+            string reversed = new string(arr);
+
+            // Check if we've already seen the reversed word
+            if (list.Contains(reversed) && word != reversed)
+            {
+                pairs.Add($"{reversed} & {word}");
+            }
+
+            list.Add(word);
+        }
+        return pairs.ToArray();
     }
 
     /// <summary>
@@ -36,13 +51,22 @@ public static class SetsAndMaps
     /// </summary>
     /// <param name="filename">The name of the file to read</param>
     /// <returns>fixed array of divisors</returns>
-    public static Dictionary<string, int> SummarizeDegrees(string filename)
+        public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
         var degrees = new Dictionary<string, int>();
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            //Console.WriteLine(fields[3]);
+             if (degrees.ContainsKey(fields[3]))
+            {
+                degrees[fields[3]]++;
+            }
+            else
+            {
+                degrees[fields[3]] = 1;
+            }
         }
 
         return degrees;
@@ -65,9 +89,24 @@ public static class SetsAndMaps
     /// using the [] notation.
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
-    {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+    {   
+        word2=word2.ToLower();
+        if (word1.Length == word2.Length)
+        {
+          foreach (char character in word1.ToLower())
+          {
+            if (!word2.Contains(character))
+            {
+              return false;
+            }
+          }
+          return true;
+
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -84,6 +123,22 @@ public static class SetsAndMaps
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
+    public class EarthquakeRoot
+    {
+        public List<Feature> features { get; set; }
+    }
+
+    public class Feature
+    {
+        public Properties properties { get; set; }
+    }
+
+    public class Properties
+    {
+        public double? mag { get; set; }        
+        public string place { get; set; }
+    }
+
     public static string[] EarthquakeDailySummary()
     {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
@@ -94,13 +149,33 @@ public static class SetsAndMaps
         var json = reader.ReadToEnd();
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
+        var featureCollection = JsonSerializer.Deserialize<EarthquakeRoot>(json, options);
+        List<string> results = new List<string>();
+        foreach (var feature in featureCollection.features)
+        {   
+            //Console.WriteLine($"{mag} - {place}");
+            if (feature?.properties?.mag is double mag &&
+                !string.IsNullOrEmpty(feature.properties.place))
+            {
+                results.Add($"{feature.properties.place} - Mag {mag}");
+            }
+        }
+        
+
+        /*       foreach (var feature in featureCollection.features)
+        {
+                double mag = feature.properties.mag.Value;
+                string place = feature.properties.place;
+                results.Add($"M {mag} - {place}");
+                //Console.WriteLine($"{mag} - {place}");
+        }*/
         // TODO Problem 5:
         // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        return results.ToArray();
     }
+
 }
