@@ -89,27 +89,38 @@ public static class SetsAndMaps
     /// using the [] notation.
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
-    {   
-        word2=word2.ToLower();
-        if (word1.Length == word2.Length)
-        {
-          foreach (char character in word1.ToLower())
-          {
-            if (!word2.Contains(character))
-            {
-              return false;
-            }
-          }
-          return true;
+    {
+        word1 = word1.Replace(" ", "").ToLower();
+        word2 = word2.Replace(" ", "").ToLower();
 
-        }
-        else
-        {
+        // if lengths differ, they cannot be anagrams
+        if (word1.Length != word2.Length)
             return false;
-        }
-    }
 
-    /// <summary>
+        Dictionary<char, int> letterCount = new Dictionary<char, int>();
+
+        // count letters in word1
+        foreach (char c in word1)
+        {
+            if (letterCount.ContainsKey(c))
+                letterCount[c]++;
+            else
+                letterCount[c] = 1;
+        }
+
+        foreach (char c in word2)
+        {
+            if (!letterCount.ContainsKey(c))
+                return false;
+
+            letterCount[c]--;
+
+            if (letterCount[c] < 0)
+                return false;
+        }
+
+        return true;
+    }    /// <summary>
     /// This function will read JSON (Javascript Object Notation) data from the 
     /// United States Geological Service (USGS) consisting of earthquake data.
     /// The data will include all earthquakes in the current day.

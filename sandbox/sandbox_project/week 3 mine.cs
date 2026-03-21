@@ -31,4 +31,27 @@ public class Programs
         return pairs.ToArray();
     }
 
+    public static bool IsAnagram(string word1, string word2)
+    {   
+        word2=word2.ToLower();
+        if (word1.Length == word2.Length)
+        {
+          foreach (char character in word1.ToLower())
+          {
+            if (!word2.Contains(character))
+            {
+              return false;
+            }
+          }
+          return true;
+
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
 }
