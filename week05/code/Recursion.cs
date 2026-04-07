@@ -159,44 +159,31 @@ public static class Recursion
     /// Use recursion to insert all paths that start at (0,0) and end at the
     /// 'end' square into the results list.
     /// </summary>
-    public static void SolveMaze(List<string> results, Maze maze, int x = 0, int y = 0, List<ValueTuple<int, int>>? currPath = null)
+public static void SolveMaze(List<string> results, Maze maze, int x = 0, int y = 0, List<ValueTuple<int, int>>? currPath = null)
+{
+    if (currPath == null)
     {
-        // If this is the first time running the function, then we need
-        // to initialize the currPath list.
-        if (currPath == null) {
-            currPath = new List<ValueTuple<int, int>>();
-        }
-        
-        // currPath.Add((1,2)); // Use this syntax to add to the current path
-
-        // TODO Start Problem 5
-        // ADD CODE HERE
-
-        if (!maze.IsValidMove(x, y, currPath))
-            return;
-
-        currPath.Add((x, y));
-        if (maze.IsEnd(x, y))
-        {
-            results.Add(currPath.AsString());
-            currPath.RemoveAt(currPath.Count - 1);
-            return;
-        }
-
-
-        if (maze.IsEnd(x, y))
-        {
-            results.Add(currPath.AsString());
-            currPath.RemoveAt(currPath.Count - 1);
-            return;
-        }
-        SolveMaze(results, maze, x + 1, y, currPath); // right
-        SolveMaze(results, maze, x - 1, y, currPath); // left
-        SolveMaze(results, maze, x, y + 1, currPath); // down
-        SolveMaze(results, maze, x, y - 1, currPath); // up
-        currPath.RemoveAt(currPath.Count - 1);
-        Debug.WriteLine($"x:{x}, y:{y}");
-        // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
-
+        currPath = new List<ValueTuple<int, int>>();
     }
-}
+
+    if (!maze.IsValidMove(currPath, x, y))
+        return;
+
+    currPath.Add((x, y));
+
+    if (maze.IsEnd(x, y))
+    {
+        results.Add(currPath.AsString());
+        currPath.RemoveAt(currPath.Count - 1);
+        return;
+    }
+
+    // Explore all directions
+    SolveMaze(results, maze, x + 1, y, currPath); // right
+    SolveMaze(results, maze, x - 1, y, currPath); // left
+    SolveMaze(results, maze, x, y + 1, currPath); // down
+    SolveMaze(results, maze, x, y - 1, currPath); // up
+
+    // Backtrack
+    currPath.RemoveAt(currPath.Count - 1);
+}}
