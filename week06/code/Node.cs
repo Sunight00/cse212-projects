@@ -11,31 +11,21 @@ public class Node
 
     public void Insert(int value)
     {
-        // TODO Start Problem 1
-        var list = new HashSet<int>();
-        if (list.Contains(value))
-        {
-            return;
-        }
-        else
-        {
         if (value < Data)
         {
-            // Insert to the left
+            
             if (Left is null)
                 Left = new Node(value);
             else
                 Left.Insert(value);
         }
-        else
+        else if (value > Data)
         {
-            // Insert to the right
+            
             if (Right is null)
                 Right = new Node(value);
             else
                 Right.Insert(value);
-        }
-
         }
     }
 
